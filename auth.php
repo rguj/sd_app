@@ -1,6 +1,5 @@
 <?php
-// File: auth.php
-require 'db.php';
+require_once('_autoload.php');
 
 $action = $_POST['action'] ?? '';
 $username = trim($_POST['username']);
@@ -44,6 +43,8 @@ elseif ($action === 'signin') {
         $stmt->execute([$username]);
         $user = $stmt->fetch();
         if ($user && password_verify($password, $user['password'])) {
+			$_SESSION['uid'] = $user['id'];
+			$_SESSION['uname'] = $user['username'];
             $response = [
                 'status' => 'success',
                 'message' => 'Login successful!',

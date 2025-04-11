@@ -1,12 +1,40 @@
-<!-- File: index.html -->
+<?php
+require_once('_autoload.php');
+
+
+//$_SESSION['msgs'][] = ['success', 'You have already logged in!'];
+
+//var_dump(session_id());
+//var_dump($_SESSION);
+
+//dd2($_SESSION);
+//$_SESSION['msgs'][] = ['success', 'You have already logged in!'];
+
+
+if(!is_null($_SESSION['uid'])) {
+	//dd2('sadsad');
+	$_SESSION['msgs'][] = ['success', 'You have already logged in!'];
+	redirect('home.php');
+}
+//$_SESSION['msgs'][] = ['success', 'You have already logged in!'];
+//dd2($_SESSION);
+
+$msgs = $_SESSION['msgs'];
+unset($_SESSION['msgs']);
+
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login & CRUD App</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
+    <title>Login</title>
+    <link href="./assets/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="./assets/toastr.min.css">
+	<script src="./assets/jquery.min.js"></script>
+	<script src="./assets/toastr.min.js"></script>
+
+
     <style>
         .error-feedback { color: red; font-size: 0.9em; }
 		.lbl-required:after { content: " *"; color: red; }
@@ -14,6 +42,9 @@
 </head>
 <body class="bg-light">
 <div class="container mt-5">
+
+	<div class="row">
+		<div class="col-4 offset-4">
     <div class="card">
         <div class="card-header text-center">
             <h3 id="txtTitle"></h3>
@@ -50,10 +81,29 @@
             </div>
         </div>
     </div>
+	
+	</div>
+	</div>
+	
+	
 </div>
 
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+
+<script>
+$(function(){
+	// display session messages
+	const msgs = <?= json_encode($msgs) ?>;
+	console.log(msgs)
+	if (Array.isArray(msgs)) {
+		msgs.forEach(([type, message]) => {
+			// success, info, warning, error
+			toastr[type](message);
+		});
+	}
+	
+});
+</script>
+
 <script>
 $(function(){
     const regGroup = $('.regGroup');
@@ -141,8 +191,9 @@ $(function(){
             } else {
                 toastr.success(res.message);
                 if (res.user) {
-                    alert(`Welcome, ${res.user.name}! Email: ${res.user.email}`);
+                    //alert(`Welcome, ${res.user.name}! Email: ${res.user.email}`);
 					$('#username, #password').val('');
+					window.location.replace('./home.php');
                 }
             }
 			$('input,button').prop('disabled', false);
