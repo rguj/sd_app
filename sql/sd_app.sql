@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Apr 10, 2025 at 10:27 AM
+-- Generation Time: Apr 11, 2025 at 07:31 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -20,6 +20,20 @@ SET time_zone = "+00:00";
 --
 -- Database: `sd_app`
 --
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `students`
+--
+
+CREATE TABLE `students` (
+  `id` int(11) NOT NULL,
+  `name` varchar(100) NOT NULL,
+  `email` varchar(100) NOT NULL,
+  `course` varchar(100) NOT NULL,
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
 
@@ -43,11 +57,19 @@ CREATE TABLE `users` (
 
 INSERT INTO `users` (`id`, `name`, `email`, `username`, `password`, `role`, `created_at`) VALUES
 (1, 'Admin User', 'admin@example.com', 'admin', '$2y$10$JuyK7h1nvwEK3Tz4a/fEQeQkFwR9S2FnHED7fpBOxUMUARJ7wRRTe', 'Admin', '2025-04-08 06:39:55'),
-(6, 'hello', 'hello@gmail.com', 'hello', '$2y$10$HRKfwCNKKDlsHrROPy0bZOp8DjL6o2ccfM.2jvVvYYDQ7cZK5Rrc.', 'User', '2025-04-10 05:13:14');
+(6, 'hello', 'hello@gmail.com', 'hello', '$2y$10$HRKfwCNKKDlsHrROPy0bZOp8DjL6o2ccfM.2jvVvYYDQ7cZK5Rrc.', 'User', '2025-04-10 05:13:14'),
+(7, 'John', 'john@gmail.com', 'john', '$2y$10$b4/nJntGwm.gu8Ywg/qWA.Dj.uyKzEVwDI/FHdyfRmQ5l8seCinOS', 'User', '2025-04-11 17:00:03'),
+(8, 'jane', 'jane@gmail.com', 'jane', '$2y$10$UhetxDLu3UULnR0kGDkJyeRD080l3bw6hA94UHaG5zRZ.EqeE7KBS', 'User', '2025-04-11 17:06:29');
 
 --
 -- Indexes for dumped tables
 --
+
+--
+-- Indexes for table `students`
+--
+ALTER TABLE `students`
+  ADD PRIMARY KEY (`id`);
 
 --
 -- Indexes for table `users`
@@ -62,10 +84,16 @@ ALTER TABLE `users`
 --
 
 --
+-- AUTO_INCREMENT for table `students`
+--
+ALTER TABLE `students`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
 -- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

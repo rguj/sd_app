@@ -23,5 +23,5 @@ if(!array_key_exists('msgs', $_SESSION)) {
 }
 
 
-require 'db.php';
+require '_db.php';
 

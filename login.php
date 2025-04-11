@@ -1,26 +1,10 @@
 <?php
 require_once('_autoload.php');
 
-
-//$_SESSION['msgs'][] = ['success', 'You have already logged in!'];
-
-//var_dump(session_id());
-//var_dump($_SESSION);
-
-//dd2($_SESSION);
-//$_SESSION['msgs'][] = ['success', 'You have already logged in!'];
-
-
 if(!is_null($_SESSION['uid'])) {
-	//dd2('sadsad');
 	$_SESSION['msgs'][] = ['success', 'You have already logged in!'];
 	redirect('home.php');
 }
-//$_SESSION['msgs'][] = ['success', 'You have already logged in!'];
-//dd2($_SESSION);
-
-$msgs = $_SESSION['msgs'];
-unset($_SESSION['msgs']);
 
 ?>
 <!DOCTYPE html>
@@ -29,22 +13,20 @@ unset($_SESSION['msgs']);
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login</title>
-    <link href="./assets/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="./assets/toastr.min.css">
-	<script src="./assets/jquery.min.js"></script>
-	<script src="./assets/toastr.min.js"></script>
-
-
+    
+	<?php require_once('_head_asset.php'); ?>
+	
     <style>
         .error-feedback { color: red; font-size: 0.9em; }
 		.lbl-required:after { content: " *"; color: red; }
     </style>
 </head>
 <body class="bg-light">
+
 <div class="container mt-5">
 
 	<div class="row">
-		<div class="col-4 offset-4">
+		<div class="col-6 offset-3">
     <div class="card">
         <div class="card-header text-center">
             <h3 id="txtTitle"></h3>
@@ -91,21 +73,6 @@ unset($_SESSION['msgs']);
 
 <script>
 $(function(){
-	// display session messages
-	const msgs = <?= json_encode($msgs) ?>;
-	console.log(msgs)
-	if (Array.isArray(msgs)) {
-		msgs.forEach(([type, message]) => {
-			// success, info, warning, error
-			toastr[type](message);
-		});
-	}
-	
-});
-</script>
-
-<script>
-$(function(){
     const regGroup = $('.regGroup');
     const toggleBtn = $('#toggleAction');
     const actionInput = $('#action');
@@ -118,7 +85,6 @@ $(function(){
             regGroup.show();
             toggleBtn.text('Switch to Sign In');
 			$('button[type=submit]').html('Register');
-			console.log($('#password').val())
 			if($('#password').val() != '') {
 				$('#password').trigger('input');
 			}
@@ -175,10 +141,8 @@ $(function(){
 		} else if($('#action').val() === 'signup') {
 			$('button[type=submit]').html('Submitting...');
 		}
-		
-		//console.log(formData)
 
-        $.post('auth.php', formData, function(response) {
+        $.post('login_.php', formData, function(response) {
             const res = JSON.parse(response);
             if (res.status === 'error') {
                 if (res.errors) {
@@ -190,6 +154,13 @@ $(function(){
                 }
             } else {
                 toastr.success(res.message);
+				
+				if($('#action').val() === 'signup') {
+					$('#name, #email, #username, #password').val('');
+					$('#action').val('signup');
+					$('#toggleAction').trigger('click');
+				}
+				
                 if (res.user) {
                     //alert(`Welcome, ${res.user.name}! Email: ${res.user.email}`);
 					$('#username, #password').val('');
@@ -214,5 +185,8 @@ $(function(){
 });
 
 </script>
+
+<?php require_once('_footer.php'); ?>
+
 </body>
 </html>

@@ -45,6 +45,9 @@ elseif ($action === 'signin') {
         if ($user && password_verify($password, $user['password'])) {
 			$_SESSION['uid'] = $user['id'];
 			$_SESSION['uname'] = $user['username'];
+			$_SESSION['uemail'] = $user['email'];
+			$_SESSION['urole'] = $user['role'];
+			$_SESSION['msgs'][] = ['success', 'You have successfully logged in!'];
             $response = [
                 'status' => 'success',
                 'message' => 'Login successful!',
