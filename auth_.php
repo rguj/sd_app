@@ -47,7 +47,7 @@ elseif ($action === 'signin') {
 			$_SESSION['uname'] = $user['username'];
 			$_SESSION['uemail'] = $user['email'];
 			$_SESSION['urole'] = $user['role'];
-			$_SESSION['msgs'][] = ['success', 'You have successfully logged in!'];
+			add_msg('success', 'You have successfully logged in!');
             $response = [
                 'status' => 'success',
                 'message' => 'Login successful!',

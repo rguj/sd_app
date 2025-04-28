@@ -15,26 +15,23 @@ function isActive(string $urlLocation) {
   <div class="collapse navbar-collapse" id="navbarNav">
 	<ul class="navbar-nav">
 	  <li class="nav-item">
-		<a class="nav-link <?= isActive('home.php') ?>" href="./home.php">Home</a>
+		<a class="nav-link <?= isActive(PAGE_HOME) ?>" href="<?= PAGE_HOME ?>">Home</a>
 	  </li>
 	  <li class="nav-item">
-		<a class="nav-link <?= isActive('student.php') ?>" href="./student.php">Students</a>
+		<a class="nav-link <?= isActive(PAGE_STUDENT) ?>" href="<?= PAGE_STUDENT ?>">Students</a>
 	  </li>
 	  
 	  <li class="nav-item dropdown float-right">
-        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+        <a class="nav-link dropdown-toggle" href="javascript:;" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
           <?= $_SESSION['uname'] ?>
         </a>
         <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-          <a class="dropdown-item" href="javascript:void;" disabled><i class="bi bi-envelope"></i><?= $_SESSION['uemail'] ?></a>
+          <a class="dropdown-item disabled" href="javascript:;" disabled><i class="bi bi-envelope"></i><?= $_SESSION['uemail'] ?></a>
+		  <a class="dropdown-item disabled" href="javascript:;" disabled><i class="bi bi-envelope"></i><span class="badge badge-success text-white"><?= $_SESSION['urole'] ?></span></a>
           <div class="dropdown-divider"></div>
-          <a class="dropdown-item" href="./logout.php">Logout</a>
+          <a class="dropdown-item" href="<?= PAGE_SIGNOUT ?>">Sign out</a>
         </div>
       </li>
-	  
-	  <li class="nav-item float-right">
-		<a class="nav-link" href="./logout.php">Logout</a>
-	  </li>
 	  
 	</ul>
 	

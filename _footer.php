@@ -1,8 +1,9 @@
 <?php
 require_once('_autoload.php');
 
-$msgs = $_SESSION['msgs'] ?? [];
-unset($_SESSION['msgs']);
+$msgs = get_msg(true);
+//$_SESSION['msgs'] ?? [];
+//unset($_SESSION['msgs']);
 
 ?>
 

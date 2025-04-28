@@ -1,18 +1,13 @@
 <?php
 require_once('_autoload.php');
 
-if(!is_null($_SESSION['uid'])) {
-	$_SESSION['msgs'][] = ['success', 'You have already logged in!'];
-	redirect('home.php');
-}
-
 ?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login</title>
+    <title>Sign In</title>
     
 	<?php require_once('_head_asset.php'); ?>
 	
@@ -25,8 +20,14 @@ if(!is_null($_SESSION['uid'])) {
 
 <div class="container mt-5">
 
+	<div class="row mb-4">
+		<div class="col-4 offset-4 text-center">
+			<a class="btn btn-link text-primary" href="./" style="font-size:20px; font-weight:600; text-decoration: none;">MyApp</a>
+		</div>
+	</div>
+
 	<div class="row">
-		<div class="col-6 offset-3">
+		<div class="col-lg-6 col-md-6 offset-lg-3 offset-md-3">
     <div class="card">
         <div class="card-header text-center">
             <h3 id="txtTitle"></h3>
@@ -34,23 +35,23 @@ if(!is_null($_SESSION['uid'])) {
         <div class="card-body">
             <form id="authForm">
                 <div class="mb-3 regGroup" style="">
-                    <label for="name" class="form-label">Name<span class="lbl-required"></span></label>
-                    <input type="text" class="form-control" id="name" name="name">
+                    <label for="name" class="form-label"><i class="bi bi-person"></i>Name<span class="lbl-required"></span></label>
+                    <input type="text" class="form-control" id="name" name="name" autofocus />
                     <div class="error-feedback" id="nameFeedback"></div>
                 </div>
                 <div class="mb-3 regGroup">
-                    <label for="email" class="form-label">Email<span class="lbl-required"></span></label>
-                    <input type="email" class="form-control" id="email" name="email">
+                    <label for="email" class="form-label"><i class="bi bi-envelope-at"></i>Email<span class="lbl-required"></span></label>
+                    <input type="email" class="form-control" id="email" name="email" autofocus />
                     <div class="error-feedback" id="emailFeedback"></div>
                 </div>
                 <div class="mb-3">
-                    <label for="username" class="form-label">Username<span class="lbl-required"></span></label>
-                    <input type="text" class="form-control" id="username" name="username">
+                    <label for="username" class="form-label"><i class="bi bi-person-vcard"></i>Username<span class="lbl-required"></span></label>
+                    <input type="text" class="form-control" id="username" name="username" autofocus />
                     <div class="error-feedback" id="usernameFeedback"></div>
                 </div>
                 <div class="mb-3">
-                    <label for="password" class="form-label">Password<span class="lbl-required"></span></label>
-                    <input type="password" class="form-control" id="password" name="password">
+                    <label for="password" class="form-label"><i class="bi bi-person-lock"></i>Password<span class="lbl-required"></span></label>
+                    <input type="password" class="form-control" id="password" name="password" autofocus />
                     <div class="error-feedback mt-1" id="passwordFeedback"></div>
                 </div>
                 <input type="hidden" id="action" name="action" value="signin">
@@ -80,11 +81,11 @@ $(function(){
     // Toggle sign in/sign up
     toggleBtn.click(function() {
         if (actionInput.val() === 'signin') {
-			$('#txtTitle').html('Register');
+			$('#txtTitle').html('Sign Up');
             actionInput.val('signup');
             regGroup.show();
             toggleBtn.text('Switch to Sign In');
-			$('button[type=submit]').html('Register');
+			$('button[type=submit]').html('Sign Up');
 			if($('#password').val() != '') {
 				$('#password').trigger('input');
 			}
@@ -93,7 +94,7 @@ $(function(){
             actionInput.val('signin');
             regGroup.hide();
             toggleBtn.text('Switch to Sign Up');
-			$('button[type=submit]').html('Login');
+			$('button[type=submit]').html('Sign In');
         }
         clearFeedback();
     });
@@ -142,7 +143,7 @@ $(function(){
 			$('button[type=submit]').html('Submitting...');
 		}
 
-        $.post('login_.php', formData, function(response) {
+        $.post('<?= PAGE_CURRENT_FILENAME ?>_.php', formData, function(response) {
             const res = JSON.parse(response);
             if (res.status === 'error') {
                 if (res.errors) {
@@ -170,9 +171,9 @@ $(function(){
 			$('input,button').prop('disabled', false);
 			
 			if($('#action').val() === 'signin') {
-				$('button[type=submit]').html('Login');
+				$('button[type=submit]').html('Sign In');
 			} else if($('#action').val() === 'signup') {
-				$('button[type=submit]').html('Register');
+				$('button[type=submit]').html('Sign Up');
 			}
 			
         }).always(function(){

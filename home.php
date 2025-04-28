@@ -1,22 +1,6 @@
 <?php
 require_once('_autoload.php');
 
-// check current logged in
-if(!is_null($_SESSION['uid'])) {
-	$stmt = $pdo->prepare("SELECT * FROM users WHERE id = ?");
-	$stmt->execute([$_SESSION['uid']]);
-	$user = $stmt->fetch();
-	if(empty($user)) {
-		$_SESSION['uid'] = null;
-	}
-}
-
-// redirect invalid user
-if(is_null($_SESSION['uid'])) {
-	$_SESSION['msgs'][] = ['error', 'Please login first'];
-	redirect('login.php');
-}
-
 ?>
 <!DOCTYPE html>
 <html lang="en">
