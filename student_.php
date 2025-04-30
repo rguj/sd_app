@@ -5,6 +5,22 @@ header('Content-Type: application/json');
 
 $action = $_GET['action'] ?? $_POST['action'] ?? '';
 
+function validate(array $inputs) {
+	$regex = [
+		'name' => "/^[A-Za-z]+([-' ][A-Za-z]+)*$/u",
+		'email' => '/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/u',
+		'course' => '/^[A-Za-z0-9][A-Za-z0-9 _-]{1,98}[A-Za-z0-9]$/u',
+	];
+	$res = [false, []];
+	foreach($inputs as $k=>$v) {
+		if(array_key_exists($k, $regex) && !preg_match($regex[$k], $v)) {
+			$res[1][$k] = 'Invalid format';
+		}
+	}
+	$res[0] = !empty($res[1]);
+	return $res;
+}
+
 if ($action === 'read') {
     $stmt = $pdo->query("SELECT * FROM students ORDER BY id DESC");
     echo json_encode(['data' => $stmt->fetchAll() ?? []]);
@@ -28,6 +44,13 @@ elseif ($action === 'save') {
 	if($_SESSION['urole'] !== 'Admin') {
 		die(json_encode(['status' => 'error', 'message' => 'Only the administrator can do this operation']));
 	}
+	
+	$validate = SELF::validate($_POST);
+	if(!$validate[0]) {
+		echo json_encode(['status' => 'error', 'message' => 'Validation failed. Please resolve the fields.', 'errors' => $validate[1]]);
+		exit();
+	}
+	
     if ($id) {
         // Update existing
         $stmt = $pdo->prepare("UPDATE students SET name = ?, email = ?, course = ? WHERE id = ?");

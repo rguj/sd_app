@@ -14,6 +14,18 @@ require_once('_autoload.php');
     <style>
         .error-feedback { color: red; font-size: 0.9em; }
 		.lbl-required:after { content: " *"; color: red; }
+		
+		#strength-bar {
+		  transition: width 0.3s, background-color 0.3s;
+		}
+		#strength-label {
+		  margin-top: 2px;
+		  font-size: 0.7rem;
+		}
+		
+		.progress {
+			height: 5px;
+		}
     </style>
 </head>
 <body class="bg-light">
@@ -35,32 +47,55 @@ require_once('_autoload.php');
         <div class="card-body">
             <form id="authForm">
                 <div class="mb-3 regGroup" style="">
-                    <label for="name" class="form-label"><i class="bi bi-person"></i>Name<span class="lbl-required"></span></label>
-                    <input type="text" class="form-control" id="name" name="name" autofocus />
+                    <label for="name" class="form-label mb-0">Name<span class="lbl-required"></span></label>
+                    <div class="input-group">
+					    <span class="input-group-text"><i class="bi bi-person"></i></span>
+						<input type="text" class="form-control" name="name" id="name" placeholder="Enter name" autofocus />
+					</div>
                     <div class="error-feedback" id="nameFeedback"></div>
                 </div>
                 <div class="mb-3 regGroup">
-                    <label for="email" class="form-label"><i class="bi bi-envelope-at"></i>Email<span class="lbl-required"></span></label>
-                    <input type="email" class="form-control" id="email" name="email" autofocus />
+                    <label for="email" class="form-label mb-0">Email<span class="lbl-required"></span></label>
+                    <div class="input-group">
+					    <span class="input-group-text"><i class="bi bi-envelope-at"></i></span>
+						<input type="email" class="form-control" name="email" id="email" placeholder="Enter email" autofocus />
+					</div>
                     <div class="error-feedback" id="emailFeedback"></div>
                 </div>
                 <div class="mb-3">
-                    <label for="username" class="form-label"><i class="bi bi-person-vcard"></i>Username<span class="lbl-required"></span></label>
-                    <input type="text" class="form-control" id="username" name="username" autofocus />
+                    <label for="username" class="form-label mb-0">Username<span class="lbl-required"></span></label>
+                    <div class="input-group">
+					    <span class="input-group-text"><i class="bi bi-person-vcard"></i></span>
+						<input type="text" class="form-control" name="username" id="username" placeholder="Enter username" autofocus />
+					</div>
                     <div class="error-feedback" id="usernameFeedback"></div>
                 </div>
                 <div class="mb-3">
-                    <label for="password" class="form-label"><i class="bi bi-person-lock"></i>Password<span class="lbl-required"></span></label>
-                    <input type="password" class="form-control" id="password" name="password" autofocus />
-                    <div class="error-feedback mt-1" id="passwordFeedback"></div>
+                    <label for="password" class="form-label mb-0">Password<span class="lbl-required"></span></label>
+                    <div class="input-group">
+					    <span class="input-group-text"><i class="bi bi-lock"></i></span>
+						<input type="password" class="form-control" name="password" id="password" placeholder="Enter password" autofocus />
+						<span class="input-group-text" id="toggle-password" style="cursor: pointer;">
+							<i class="bi bi-eye" id="toggle-icon"></i>
+					    </span>
+					</div>
+					<div class="d-none" id="div-password-strength">
+						<div id="strength-label" class="text-muted">Password Required</div>
+						<div class="progress mt-1">
+							<div id="strength-bar" class="progress-bar" role="progressbar"></div>
+						</div>
+						<div class="error-feedback mt-1" id="passwordFeedback"></div>
+					</div>
+					
+					
                 </div>
                 <input type="hidden" id="action" name="action" value="signin">
-                <div class="text-center">
+                <div class="text-center mt-4">
                     <button type="submit" class="btn btn-primary">Submit</button>
                 </div>
             </form>
             <div class="mt-3 text-center">
-                <button class="btn btn-link" id="toggleAction">Switch to Sign Up</button>
+                <button class="btn btn-link" id="toggleAction" style="text-decoration:none;">Switch to Sign Up</button>
             </div>
         </div>
     </div>
@@ -73,10 +108,35 @@ require_once('_autoload.php');
 
 
 <script>
+
+
+const regGroup = $('.regGroup');
+const toggleBtn = $('#toggleAction');
+const actionInput = $('#action');
+
+
+const passwordInput = document.getElementById('password');
+const strengthBar = document.getElementById('strength-bar');
+const strengthLabel = document.getElementById('strength-label');
+
+function updateStrengthBar(score) {
+  const widths = ['100%', '20%', '40%', '60%', '80%', '100%'];
+  const colors = ['bg-danger', 'bg-danger', 'bg-warning', 'bg-info', 'bg-primary', 'bg-success'];
+  const labels = ['Password Required', 'Very Weak', 'Weak', 'Moderate', 'Strong', 'Very Strong'];
+
+  strengthBar.style.width = widths[score];
+  strengthBar.className = `progress-bar ${colors[score]}`;
+  strengthLabel.textContent = labels[score];
+}
+
+
+
+function clearFeedback() {
+	$('.error-feedback').html('');
+}
+
+
 $(function(){
-    const regGroup = $('.regGroup');
-    const toggleBtn = $('#toggleAction');
-    const actionInput = $('#action');
 
     // Toggle sign in/sign up
     toggleBtn.click(function() {
@@ -89,52 +149,64 @@ $(function(){
 			if($('#password').val() != '') {
 				$('#password').trigger('input');
 			}
+			$('#div-password-strength').removeClass('d-none');
         } else {
 			$('#txtTitle').html('Sign In');
             actionInput.val('signin');
             regGroup.hide();
             toggleBtn.text('Switch to Sign Up');
 			$('button[type=submit]').html('Sign In');
+			$('#div-password-strength').addClass('d-none');
         }
         clearFeedback();
     });
 	
+	$(toggleBtn).on('click', function() {
+		if(actionInput.val() == 'signup') {
+			$('#password').trigger('input');
+		}
+	});
+	
 
     // On input validation (for real-time UX)
     $('#password').on('input', function() {
+			
+		log(111)
 		if($('#action').val() != 'signup') return;
 		const spanBadgeE = '<span class="border border-secondary text-danger rounded p-1 me-2 mt-1 py-0" style="border-color: #dddddd !important; display:inline-block;">';
 		const spanBadgeS = '<span class="border border-secondary text-success rounded p-1 me-2 mt-1 py-0" style="border-color: #dddddd !important; display:inline-block;">';
         const val = $(this).val();
         let feedback = '';
+		let score = 0;
 		
-        if (val.length < 6) feedback += spanBadgeE; else feedback += spanBadgeS;
+		log(2)
+        if (val.length < 6) { feedback += spanBadgeE; } else { feedback += spanBadgeS; score++; }
 		feedback += 'Has at least 6 characters</span>';
 		
-        if (!/[a-z]/.test(val)) feedback += spanBadgeE; else feedback += spanBadgeS;
+        if (!/[a-z]/.test(val)) { feedback += spanBadgeE; } else { feedback += spanBadgeS; score++; }
 		feedback += 'Has at least 1 lowercase letter</span>';
 		
-        if (!/[A-Z]/.test(val)) feedback += spanBadgeE; else feedback += spanBadgeS;
+        if (!/[A-Z]/.test(val)) { feedback += spanBadgeE; } else { feedback += spanBadgeS; score++; }
 		feedback += 'Has at least 1 uppercase letter</span>';
 		
-        if (!/[0-9]/.test(val)) feedback += spanBadgeE; else feedback += spanBadgeS;
+        if (!/[0-9]/.test(val)) { feedback += spanBadgeE; } else { feedback += spanBadgeS; score++; }
 		feedback += 'Has at least 1 digit</span>';
 		
-        if (!/[!@#$%^&*]/.test(val)) feedback += spanBadgeE; else feedback += spanBadgeS;
+        if (!/[!@#$%^&*]/.test(val)) { feedback += spanBadgeE; } else { feedback += spanBadgeS; score++; }
 		feedback += 'Has at least 1 special character</span>';
+		
+		log(score)
+		updateStrengthBar(score);
 		
         $('#passwordFeedback').html(feedback);
     });
-
-    function clearFeedback() {
-        $('.error-feedback').html('');
-    }
 
     // Handle form submit via AJAX
     $('#authForm').submit(function(e) {
         e.preventDefault();
         clearFeedback();
         const formData = $(this).serialize();
+		log(formData)
 		$('input,button').prop('disabled', true);
 		
 		if($('#action').val() === 'signin') {
@@ -144,7 +216,9 @@ $(function(){
 		}
 
         $.post('<?= PAGE_CURRENT_FILENAME ?>_.php', formData, function(response) {
+			log(response)
             const res = JSON.parse(response);
+			
             if (res.status === 'error') {
                 if (res.errors) {
                     for (let field in res.errors) {
@@ -183,6 +257,42 @@ $(function(){
 	
 	actionInput.val('signup');
 	toggleBtn.trigger('click');
+	
+	
+	$('#toggle-password').on('click', () => {
+		const isPassword = $('#password').attr('type') == 'password';
+		
+		$('#password').attr('type', isPassword ? 'text' : 'password');
+		if($('#password').attr('type') == 'password') {
+			$('#toggle-icon').removeClass('bi-eye-slash i-eye').addClass('bi-eye-slash');
+		} else {
+			$('#toggle-icon').removeClass('bi-eye-slash bi-eye').addClass('bi-eye');
+		}
+		
+    });
+	
+	
+	
+
+    /*function getStrengthScore(password) {
+      // Simple score function (adjust as needed)
+      let score = 0;
+      if (password.length > 0) score++;
+      if (password.length >= 6) score++;
+      if (/[A-Z]/.test(password)) score++;
+      if (/[0-9]/.test(password)) score++;
+      if (/[^A-Za-z0-9]/.test(password)) score++;
+      return password.length === 0 ? 0 : score;
+    }*/
+
+    /*passwordInput.addEventListener('input', () => {
+      const score = getStrengthScore(passwordInput.value);
+      updateStrengthBar(score);
+    });*/
+	
+	
+	
+	
 });
 
 </script>

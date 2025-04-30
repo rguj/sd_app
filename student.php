@@ -121,6 +121,33 @@ $(document).ready(function() {
     $('#saveStudent').click(function() {
         $.post('student_.php?action=save', $('#studentForm').serialize(), function(res) {
             //const data = JSON.parse(res);
+			
+			/*
+			if (res.status === 'error') {
+                if (res.errors) {
+                    for (let field in res.errors) {
+                        $(`#${field}Feedback`).text(res.errors[field]);
+                    }
+                } else if (res.message) {
+                    toastr.error(res.message);
+                }
+            } else {
+                toastr.success(res.message);
+				
+				if($('#action').val() === 'signup') {
+					$('#name, #email, #username, #password').val('');
+					$('#action').val('signup');
+					$('#toggleAction').trigger('click');
+				}
+				
+                if (res.user) {
+                    //alert(`Welcome, ${res.user.name}! Email: ${res.user.email}`);
+					$('#username, #password').val('');
+					window.location.replace('./home.php');
+                }
+            }
+			
+			*/
 			const data = res;
             if (data.status === 'success') {
                 toastr.success(data.message);
