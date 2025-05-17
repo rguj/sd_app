@@ -18,17 +18,18 @@ function isActive(string $urlLocation) {
 		<a class="nav-link <?= isActive(PAGE_HOME) ?>" href="<?= PAGE_HOME ?>">Home</a>
 	  </li>
 	  <li class="nav-item">
+		<a class="nav-link <?= isActive(PAGE_USER) ?>" href="<?= PAGE_USER ?>">Users Management</a>
+	  </li>
+	  
+	  <li class="nav-item">
 		<a class="nav-link <?= isActive(PAGE_STUDENT) ?>" href="<?= PAGE_STUDENT ?>">Students</a>
 	  </li>
 	  
 	  <li class="nav-item dropdown float-right">
-        <a class="nav-link dropdown-toggle" href="javascript:;" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+        <a class="nav-link dropdown-toggle" href="javascript:;" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="font-weight:600;">
           <?= $_SESSION['uname'] ?>
         </a>
         <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-          <a class="dropdown-item disabled" href="javascript:;" disabled><i class="bi bi-envelope"></i><?= $_SESSION['uemail'] ?></a>
-		  <a class="dropdown-item disabled" href="javascript:;" disabled><i class="bi bi-envelope"></i><span class="badge badge-success text-white"><?= $_SESSION['urole'] ?></span></a>
-          <div class="dropdown-divider"></div>
           <a class="dropdown-item" href="<?= PAGE_SIGNOUT ?>">Sign out</a>
         </div>
       </li>

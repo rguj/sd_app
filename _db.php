@@ -47,7 +47,7 @@ try {
             `role` ENUM('Admin','User') DEFAULT 'User',
             `created_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP(),
             PRIMARY KEY (`id`)
-        ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
     ");
 
     // 3. Insert default data into users table if empty

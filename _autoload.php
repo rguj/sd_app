@@ -89,6 +89,7 @@ define('PAGE_AUTH', 'auth.php');
 define('PAGE_SIGNOUT', 'signout.php');
 define('PAGE_HOME', 'home.php');
 define('PAGE_STUDENT', 'student.php');
+define('PAGE_USER', 'user.php');
 
 
 $pages = [
@@ -98,7 +99,8 @@ $pages = [
 	'auth' => [
 		PAGE_SIGNOUT,
 		PAGE_HOME,
-		PAGE_STUDENT,
+		PAGE_STUDENT,		
+		PAGE_USER,
 	],
 ];
 
