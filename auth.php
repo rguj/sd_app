@@ -170,8 +170,6 @@ $(function(){
 
     // On input validation (for real-time UX)
     $('#password').on('input', function() {
-			
-		log(111)
 		if($('#action').val() != 'signup') return;
 		const spanBadgeE = '<span class="border border-secondary text-danger rounded p-1 me-2 mt-1 py-0" style="border-color: #dddddd !important; display:inline-block;">';
 		const spanBadgeS = '<span class="border border-secondary text-success rounded p-1 me-2 mt-1 py-0" style="border-color: #dddddd !important; display:inline-block;">';
@@ -179,7 +177,6 @@ $(function(){
         let feedback = '';
 		let score = 0;
 		
-		log(2)
         if (val.length < 6) { feedback += spanBadgeE; } else { feedback += spanBadgeS; score++; }
 		feedback += 'Has at least 6 characters</span>';
 		
@@ -195,7 +192,6 @@ $(function(){
         if (!/[!@#$%^&*]/.test(val)) { feedback += spanBadgeE; } else { feedback += spanBadgeS; score++; }
 		feedback += 'Has at least 1 special character</span>';
 		
-		log(score)
 		updateStrengthBar(score);
 		
         $('#passwordFeedback').html(feedback);
@@ -206,7 +202,6 @@ $(function(){
         e.preventDefault();
         clearFeedback();
         const formData = $(this).serialize();
-		log(formData)
 		$('input,button').prop('disabled', true);
 		
 		if($('#action').val() === 'signin') {
@@ -215,18 +210,32 @@ $(function(){
 			$('button[type=submit]').html('Submitting...');
 		}
 
-        $.post('<?= PAGE_CURRENT_FILENAME ?>_.php', formData, function(response) {
+        $.post('<?= PAGE_CURRENT_FILENAME ?>_.php', formData, function(response, e, j) {
 			log(response)
+			log(e)
+			log(j)
             const res = JSON.parse(response);
 			
             if (res.status === 'error') {
                 if (res.errors) {
+					toastr.error('Validation failed. Please resolve the fields.');
                     for (let field in res.errors) {
                         $(`#${field}Feedback`).text(res.errors[field]);
+						let input = $('#'+field);
+                        input.addClass('is-invalid');
+                        input.next('.error-feedback').text(res.errors[field]);
                     }
                 } else if (res.message) {
                     toastr.error(res.message);
                 }
+				
+				if($('#action').val() === 'signin') {
+					$('button[type=submit]').html('Sign Up');
+				} else if($('#action').val() === 'signup') {
+					$('button[type=submit]').html('Sign In');
+				}
+				$('input,button').prop('disabled', false);
+				return;
             } else {
                 toastr.success(res.message);
 				
@@ -237,7 +246,6 @@ $(function(){
 				}
 				
                 if (res.user) {
-                    //alert(`Welcome, ${res.user.name}! Email: ${res.user.email}`);
 					$('#username, #password').val('');
 					window.location.replace('./home.php');
                 }
@@ -271,24 +279,19 @@ $(function(){
 		
     });
 	
-	
-	
+	function clearFormErrors() {
+        $('#studentForm input').removeClass('is-invalid');
+        $('#authForm .error-feedback').text('');
+    }
 
-    /*function getStrengthScore(password) {
-      // Simple score function (adjust as needed)
-      let score = 0;
-      if (password.length > 0) score++;
-      if (password.length >= 6) score++;
-      if (/[A-Z]/.test(password)) score++;
-      if (/[0-9]/.test(password)) score++;
-      if (/[^A-Za-z0-9]/.test(password)) score++;
-      return password.length === 0 ? 0 : score;
-    }*/
-
-    /*passwordInput.addEventListener('input', () => {
-      const score = getStrengthScore(passwordInput.value);
-      updateStrengthBar(score);
-    });*/
+    $('#authForm input').on('input', function () {
+		if($('#action').val() === 'signup') {
+			$(this).removeClass('is-invalid');
+			if($(this).attr('id') !== 'password') {
+				$(this).next('.error-feedback').text('');
+			}
+		}
+    });
 	
 	
 	
